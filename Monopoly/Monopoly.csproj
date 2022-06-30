@@ -45,10 +45,6 @@
   <ItemGroup>
     <Compile Include="Dice.cs" />
     <Compile Include="GameManager.cs" />
-    <Compile Include="GameStates\GameState.cs" />
-    <Compile Include="GameStates\GameStateManager.cs" />
-    <Compile Include="GameStates\MainMenu.cs" />
-    <Compile Include="GameStates\Setup.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
