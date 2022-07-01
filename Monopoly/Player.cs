@@ -20,8 +20,33 @@ namespace Monopoly
         public void TakeTurn()
         {
             //roll dice
+            int diceRoll = Dice.RollDice();
             //move position
-            //
+            //CurrentSpace = Board
+            //action -
+                /*
+                landed on a property space?
+                    YES
+                    - owned property?
+                        YES
+                        - owned by you
+                            YES
+                            - buy house/hotel
+                            NO
+                            - pay rent
+                        NO
+                        - buy space?
+                            YES
+                            - buySpace()
+                            NO
+                            - Auction()
+                landed on go to jail
+                    - gotojail()
+                landed on taxspace
+                    - pay tax
+                landed on freeparking
+                    -do nothing...for now      
+                */
         }
         /*
 	* Paying out
