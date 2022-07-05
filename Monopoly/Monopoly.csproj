@@ -51,6 +51,9 @@
     <Compile Include="GameStates\Setup.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Spaces\PropertySpace.cs" />
+    <Compile Include="Spaces\Space.cs" />
+    <Compile Include="Spaces\StationSpace.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
