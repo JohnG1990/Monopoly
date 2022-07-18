@@ -28,13 +28,13 @@ namespace Monopoly.Spaces
         public int Houses { get; set; } = 0;
         public bool HasHotel { get; set; } = false;
 
-        public PropertySpace(string name, int price, PropertyColour colour, int rent)
+        public PropertySpace(string name, int price, PropertyColour colour)
         {
             Name = name;
             Price = price;
             Colour = colour;
-            Rent = rent;
             Mortgage = Price / 2;
+            CalculateRent();
         }
 
         public void CalculateRent()

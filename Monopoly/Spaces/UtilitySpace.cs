@@ -6,12 +6,20 @@ using System.Threading.Tasks;
 
 namespace Monopoly.Spaces
 {
-    class Utility : IOwnableSpace
+    class UtilitySpace : IOwnableSpace
     {
         public string Name { get; set; }
         public int Price { get; set; }
         public int Rent { get; set; }
         public int Mortgage { get; }
+
+        public UtilitySpace(string name, int price)
+        {
+            Name = name;
+            Price = price;
+            Mortgage = Price / 2;
+            CalculateRent();
+        }
 
         public void CalculateRent()
         {

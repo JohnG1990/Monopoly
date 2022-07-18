@@ -13,6 +13,15 @@ namespace Monopoly.Spaces
         public int Rent { get; set; }
         public int Mortgage { get; }
 
+        public StationSpace(string name, int price)
+        {
+            Name = name;
+            Price = price;
+            Mortgage = Price / 2;
+
+            CalculateRent();
+        }
+
         public void CalculateRent()
         {
             CalculateRent(0);
