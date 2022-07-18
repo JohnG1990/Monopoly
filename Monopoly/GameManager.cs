@@ -16,7 +16,7 @@ namespace Monopoly
         private int HotelLimit { get; }
         public int CurrentHotelCount { get; set; }
 
-        //board
+        public Board board { get; set; }
         //vector players
 
         public GameManager()
@@ -35,6 +35,9 @@ namespace Monopoly
             CurrentHotelCount = 0;
 
             //board setup
+            Board board = new Board();
+            board.Init();
+
             //card setup
             return result;
         }
