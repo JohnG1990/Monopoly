@@ -10,8 +10,9 @@ namespace Monopoly
     {
         public int Money { get; set; } = 1500;
         public bool InJail { get; set; } = false;
-        //public Space* CurrentSpace { get; set; }
-        //public List<Space*> OwnedProperties { get; set; }
+
+        public ISpace CurrentSpace { get; set; }
+        public List<ISpace> OwnedProperties { get; set; }
 
         public Player()
         {
@@ -21,7 +22,9 @@ namespace Monopoly
         {
             //roll dice
             int diceRoll = Dice.RollDice();
+            
             //move position
+            
             //CurrentSpace = Board
             //action -
                 /*
@@ -47,6 +50,62 @@ namespace Monopoly
                 landed on freeparking
                     -do nothing...for now      
                 */
+        }
+
+        bool DoAction()
+        {
+            bool res = false;
+
+            if (CurrentSpace is Spaces.IOwnableSpace)
+            { 
+                //owned
+                //find owner
+                //pay owner
+            }
+            else if (CurrentSpace is Spaces.IUnownableSpace)
+            {
+                var currentSpace = CurrentSpace as Spaces.ActionSpace;
+                //do action
+                switch (currentSpace.SpaceAction)
+                {
+                    case Spaces.ActionSpace.Action.PASS_GO:
+                        res = true;
+                        break;
+                    case Spaces.ActionSpace.Action.CHANCE_CARD:
+                        res = true;
+                        //Pickup chance Card
+                        break;
+                    case Spaces.ActionSpace.Action.COMM_CHEST:
+                        res = true;
+                        //Pickup community chest
+                        break;
+                    case Spaces.ActionSpace.Action.GO_TO_JAIL:
+                        InJail = true;
+                        res = true;
+                        //currentspace = jail
+                        break;
+                    case Spaces.ActionSpace.Action.TAX:
+                        if (currentSpace.Name == "Income Tax")
+                        {
+                            Money -= 200;
+                        }
+                        else
+                        {
+                            Money -= 100;
+                        }
+                        res = true;
+                        break;
+                    case Spaces.ActionSpace.Action.FREE_PARKING:
+                        //**FALLTHROUGH**
+                    case Spaces.ActionSpace.Action.JAIL:
+                        //DO NOTHING
+                        //JUST VISITING
+                        res = true;
+                        break;
+                }
+            }
+
+            return res;
         }
         /*
 	* Paying out
