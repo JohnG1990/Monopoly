@@ -17,7 +17,8 @@ namespace Monopoly
         public int CurrentHotelCount { get; set; }
 
         public Board board { get; set; }
-        //vector players
+        
+        public List<Player> Players { get; set; }
 
         public GameManager()
         {
@@ -116,18 +117,38 @@ namespace Monopoly
                 }
                 else
                 {
-                    players = (int)Char.GetNumericValue(UserInput.KeyChar);
                     //setup players
+                    players = (int)Char.GetNumericValue(UserInput.KeyChar);
+
+                    for (int i = 0; i < players; i++)
+                    { 
+                        Players.Add(new Player(false, i)); //passing false for now until AI is set up
+                    }
+
                     setupComplete = true;
                 }              
             }
 
+            /***********************************************************************
+             *                          MAIN GAME LOOP                             *
+             ***********************************************************************/
             while (!exit)
             {
-                //Input
-                //Update
-                //Display
+                foreach (Player player in Players)
+                {
+                    //Display current state
+                    DisplayPlayerState(player);
+                    //Input
+                    player.TakeTurn();
+                    //Update
+                    //Display new state
+                }
             }
+        }
+
+        void DisplayPlayerState(Player player)
+        {
+            Console.WriteLine($"Player {player.PlayerNumber}/tMoney:{player.Money}");
         }
     }
 }

@@ -8,6 +8,6 @@ namespace Monopoly
 {
     public interface ISpace
     {
-        string Name { get; set; }
+        string Name { get; }
     }
 }
