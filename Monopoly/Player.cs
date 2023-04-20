@@ -10,7 +10,6 @@ namespace Monopoly
     {
         public int Money { get; set; } = 1500;
         public bool InJail { get; set; } = false;
-
         public ISpace CurrentSpace { get; set; }
         public List<Spaces.IOwnableSpace> OwnedProperties { get; set; }
         public bool AIPlayer { get; set; }
@@ -21,117 +20,23 @@ namespace Monopoly
         {
             PlayerNumber = playerNumber;
             AIPlayer = aiPlayer;
+            OwnedProperties = new List<Spaces.IOwnableSpace>();
         }
 
-        public void TakeTurn()
-        {
-            //roll dice
-            int roll =  RollDice();
-
-            if (DoubleCount == 3)
-            {
-                GoToJail();
-            }
-
-            //move position
-            
-            
-            //CurrentSpace = Board
-            //action -
-                /*
-                landed on a property space?
-                    YES
-                    - owned property?
-                        YES
-                        - owned by you
-                            YES
-                            - buy house/hotel
-                            NO
-                            - pay rent
-                        NO
-                        - buy space?
-                            YES
-                            - buySpace()
-                            NO
-                            - Auction()
-                landed on go to jail
-                    - gotojail()
-                landed on taxspace
-                    - pay tax
-                landed on freeparking
-                    -do nothing...for now      
-                */
-        }
-
-        bool DoAction()
-        {
-            bool res = false;
-
-            if (CurrentSpace is Spaces.IOwnableSpace)
-            { 
-                //owned
-                //find owner
-                //pay owner
-            }
-            else if (CurrentSpace is Spaces.IUnownableSpace)
-            {
-                var currentSpace = CurrentSpace as Spaces.ActionSpace;
-                //do action
-                switch (currentSpace.SpaceAction)
-                {
-                    case Spaces.ActionSpace.Action.PASS_GO:
-                        res = true;
-                        break;
-                    case Spaces.ActionSpace.Action.CHANCE_CARD:
-                        res = true;
-                        //Pickup chance Card
-                        break;
-                    case Spaces.ActionSpace.Action.COMM_CHEST:
-                        res = true;
-                        //Pickup community chest
-                        break;
-                    case Spaces.ActionSpace.Action.GO_TO_JAIL:
-                        GoToJail();
-                        res = true;
-                        break;
-                    case Spaces.ActionSpace.Action.TAX:
-                        if (currentSpace.Name == "Income Tax")
-                        {
-                            Money -= 200;
-                        }
-                        else
-                        {
-                            Money -= 100;
-                        }
-                        res = true;
-                        break;
-                    case Spaces.ActionSpace.Action.FREE_PARKING:
-                        //**FALLTHROUGH**
-                    case Spaces.ActionSpace.Action.JAIL:
-                        //DO NOTHING
-                        //JUST VISITING
-                        res = true;
-                        break;
-                }
-            }
-
-            return res;
-        }
-
-        void PayOut(int amount)
+        public void PayOut(int amount)
         {
             Money -= amount;
         }
 
-        void PayIn(int amount)
+        public void PayIn(int amount)
         {
             Money += amount;
         }
 
-        int RollDice()
+        public int RollDice()
         {
-            int roll1 = RollDice();
-            int roll2 = RollDice();
+            int roll1 = Dice.RollDice();
+            int roll2 = Dice.RollDice();
             int totalRoll = roll1 + roll2;
 
             if (roll1 == roll2)
@@ -162,16 +67,33 @@ namespace Monopoly
             PayOut(space.HousePrice);
             space.AddHotel();
         }
-
-        void GoToJail()
+        public void MoveToSpace(ISpace space)
+        {
+            CurrentSpace = space;
+        }
+        public void GoToJail()
         {
             InJail = true;
-            //CurrentSpace = JailSpace
         }
-
-        /*
-	* Move
-	* Collect when passing go
-         */
+        public void MortgageProperty(ref Spaces.PropertySpace space)
+        {
+            if (!space.HasBuildingsOn() && !space.IsMortgaged)
+            {
+                space.IsMortgaged = true;
+                PayIn(space.Mortgage);
+            }
+        }
+        public void UnMortgageProperty(ref Spaces.PropertySpace space)
+        {
+            if (space.IsMortgaged)
+            {
+                int repayAmount = (int)Math.Round((double)space.Mortgage * 1.1);
+                if (repayAmount < Money)
+                {
+                    PayOut(repayAmount);
+                    space.IsMortgaged = false;
+                }
+            }
+        }
     }
 }
