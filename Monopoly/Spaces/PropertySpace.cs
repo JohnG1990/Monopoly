@@ -20,23 +20,54 @@ namespace Monopoly.Spaces
             DARK_BLUE
         }
 
-        public PropertyColour Colour { get; set; }
-        public string Name { get; set; }
-        public int Price { get; set; }
+        public PropertyColour Colour { get; }
+        public string Name { get; }
+        public int Price { get; }
         public int Rent { get; set; }
         public int Mortgage { get; }
+        public bool IsMortgaged { get; set; }
         public int Houses { get; set; } = 0;
         public bool HasHotel { get; set; } = false;
-
+        public int HousePrice { get; }
         public PropertySpace(string name, int price, PropertyColour colour)
         {
             Name = name;
             Price = price;
             Colour = colour;
             Mortgage = Price / 2;
+            IsMortgaged = false;
             CalculateRent();
+            HousePrice = SetHousePrice(colour);
         }
 
+        private int SetHousePrice(PropertyColour colour)
+        {
+            switch (colour)
+            {
+                case PropertyColour.BROWN:
+                    goto case PropertyColour.LIGHT_BLUE;
+                    //FALLTHROUGH
+                case PropertyColour.LIGHT_BLUE:
+                    return 50;
+                case PropertyColour.PINK:
+                    goto case PropertyColour.ORANGE;
+                    //FALLTHROUGH
+                case PropertyColour.ORANGE:
+                    return 100;
+                case PropertyColour.RED:
+                    goto case PropertyColour.YELLOW;
+                    //FALLTHROUGH
+                case PropertyColour.YELLOW:
+                    return 150;
+                case PropertyColour.GREEN:
+                    goto case PropertyColour.DARK_BLUE;
+                    //FALLTHROUGH
+                case PropertyColour.DARK_BLUE:
+                    return 200;
+                default:
+                    return 0;
+            }
+        }
         public void CalculateRent()
         {
             if (Houses == 0)
@@ -93,6 +124,11 @@ namespace Monopoly.Spaces
                 HasHotel = true;
                 CalculateRent();
             }
+        }
+
+        public bool HasBuildingsOn()
+        {
+            return Houses != 0 || HasHotel;
         }
     }
 }

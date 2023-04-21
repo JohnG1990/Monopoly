@@ -10,51 +10,90 @@ namespace Monopoly
     {
         public int Money { get; set; } = 1500;
         public bool InJail { get; set; } = false;
-        //public Space* CurrentSpace { get; set; }
-        //public List<Space*> OwnedProperties { get; set; }
+        public ISpace CurrentSpace { get; set; }
+        public List<Spaces.IOwnableSpace> OwnedProperties { get; set; }
+        public bool AIPlayer { get; set; }
+        public int PlayerNumber { get; set; }
+        public int DoubleCount { get; set; }
 
-        public Player()
+        public Player(bool aiPlayer, int playerNumber)
         {
+            PlayerNumber = playerNumber;
+            AIPlayer = aiPlayer;
+            OwnedProperties = new List<Spaces.IOwnableSpace>();
         }
 
-        public void TakeTurn()
+        public void PayOut(int amount)
         {
-            //roll dice
-            int diceRoll = Dice.RollDice();
-            //move position
-            //CurrentSpace = Board
-            //action -
-                /*
-                landed on a property space?
-                    YES
-                    - owned property?
-                        YES
-                        - owned by you
-                            YES
-                            - buy house/hotel
-                            NO
-                            - pay rent
-                        NO
-                        - buy space?
-                            YES
-                            - buySpace()
-                            NO
-                            - Auction()
-                landed on go to jail
-                    - gotojail()
-                landed on taxspace
-                    - pay tax
-                landed on freeparking
-                    -do nothing...for now      
-                */
+            Money -= amount;
         }
-        /*
-	* Paying out
-	* Receiving money
-	* Rolling dice
-	* Buying space/house/hotel
-	* Move
-	* Collect when passing go
-         */
+
+        public void PayIn(int amount)
+        {
+            Money += amount;
+        }
+
+        public int RollDice()
+        {
+            int roll1 = Dice.RollDice();
+            int roll2 = Dice.RollDice();
+            int totalRoll = roll1 + roll2;
+
+            if (roll1 == roll2)
+            {
+                DoubleCount++;
+            }
+            else
+            {
+                DoubleCount = 0;
+            }
+
+            return totalRoll;
+        }
+
+        void BuySpace(ref Spaces.IOwnableSpace space)
+        {
+            PayOut(space.Price);
+            OwnedProperties.Add(space);
+        }
+
+        void BuyHouse(ref Spaces.PropertySpace space)
+        {
+            PayOut(space.HousePrice);
+            space.AddHouse();
+        }
+        void BuyHotel(ref Spaces.PropertySpace space)
+        {
+            PayOut(space.HousePrice);
+            space.AddHotel();
+        }
+        public void MoveToSpace(ISpace space)
+        {
+            CurrentSpace = space;
+        }
+        public void GoToJail()
+        {
+            InJail = true;
+        }
+        public void MortgageProperty(ref Spaces.PropertySpace space)
+        {
+            if (!space.HasBuildingsOn() && !space.IsMortgaged)
+            {
+                space.IsMortgaged = true;
+                PayIn(space.Mortgage);
+            }
+        }
+        public void UnMortgageProperty(ref Spaces.PropertySpace space)
+        {
+            if (space.IsMortgaged)
+            {
+                int repayAmount = (int)Math.Round((double)space.Mortgage * 1.1);
+                if (repayAmount < Money)
+                {
+                    PayOut(repayAmount);
+                    space.IsMortgaged = false;
+                }
+            }
+        }
     }
 }

@@ -8,7 +8,7 @@ namespace Monopoly.Spaces
 {
     public interface IOwnableSpace : ISpace
     {
-        int Price { get; set; }
+        int Price { get; }
         int Rent { get; set; }
         int Mortgage { get; }
 
